@@ -8,16 +8,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+//service implemntation class where the actual bussiness logic goes
 @Service
 public class TrackServiceImpl implements TrackService {
 
-    public TrackRepository trackRepository;
+    private TrackRepository trackRepository;
     @Autowired
     public TrackServiceImpl(TrackRepository trackRepository) {
         this.trackRepository = trackRepository;
     }
-
+    //saving a track method
     @Override
     public Track saveTrack(Track track)throws  TrackAlreadyExistsException {
         if(trackRepository.existsById(track.getTrackId())){
@@ -29,12 +29,12 @@ public class TrackServiceImpl implements TrackService {
         }
 
     }
-
+    //getting all the tracks
     @Override
     public List<Track> getAllTracks() {
         return trackRepository.findAll();
     }
-
+    //getting particular tracks by id
     @Override
     public  Optional<Track> getTrackById(int id) throws TrackNotFoundException{
         if(trackRepository.existsById(id)) {
@@ -47,13 +47,13 @@ public class TrackServiceImpl implements TrackService {
         }
 
     }
-
+    //updating a new track with existing one or if not fond it saves as a new one
     @Override
     public Track updateTrack(Track track,int trackId) {
         Track updatedTrack=trackRepository.save(track);
         return updatedTrack;
     }
-
+    //deleting a track method
     @Override
     public List<Track> deleteTrackById(int id) throws TrackNotFoundException {
         if(trackRepository.existsById(id)) {
@@ -65,7 +65,7 @@ public class TrackServiceImpl implements TrackService {
             throw new TrackNotFoundException("Track Not found");
         }
     }
-
+    //finding a track by name
     @Override
     public List<Track> findByName(String trackName) throws TrackNotFoundException {
             return trackRepository.findByName(trackName);

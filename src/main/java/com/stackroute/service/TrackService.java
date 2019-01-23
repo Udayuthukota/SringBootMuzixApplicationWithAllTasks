@@ -6,7 +6,7 @@ import com.stackroute.exceptions.TrackNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
-
+//Track service interface which is used in service implementation class
 public interface TrackService {
 
     public Track saveTrack(Track track) throws TrackAlreadyExistsException;
