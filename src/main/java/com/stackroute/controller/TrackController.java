@@ -1,6 +1,7 @@
 package com.stackroute.controller;
 import com.stackroute.domain.Track;
 import com.stackroute.service.TrackService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,52 +14,95 @@ import java.util.Optional;
 @RequestMapping(value="api/v1")
 public class TrackController {
 
-TrackService trackService;
+public TrackService trackService;
     @Autowired
     public TrackController(TrackService trackService) {
         this.trackService = trackService;
     }
-
+    @ApiOperation(value = "Adding a new track", response = Iterable.class)
     @PostMapping("track")
     public ResponseEntity<?> saveTrack(@RequestBody Track track){
+        //To save a track
         ResponseEntity responseEntity;
-        trackService.saveTrack(track);
-        responseEntity= new ResponseEntity<String>("Successfully saved", HttpStatus.OK);
+        try {
+            trackService.saveTrack(track);
+            responseEntity = new ResponseEntity<String>("Successfully saved", HttpStatus.OK);
+        } catch (Exception ex) {
+            responseEntity = new ResponseEntity(ex.getMessage(), HttpStatus.CONFLICT);
+        }
     return responseEntity;
     }
-
+    @ApiOperation(value = "Get the details of all track", response = Iterable.class)
     @GetMapping("tracks")
     public ResponseEntity<List<Track>> getAllTracks(){
-         ResponseEntity responseEntity=new ResponseEntity<List<Track>>(trackService.getAllTracks(),HttpStatus.OK);
+        //To get all the tracks available
+        ResponseEntity responseEntity;
+                try {
+                    responseEntity = new ResponseEntity<List<Track>>(trackService.getAllTracks(), HttpStatus.OK);
+                }catch (Exception ex) {
+                    responseEntity = new ResponseEntity(ex.getMessage(), HttpStatus.CONFLICT);
+                }
     return responseEntity;
     }
 
-    @PutMapping("update/{trackId}")
+    @PutMapping("track2/{trackId}")
     public ResponseEntity<?> updateTrack(@RequestBody Track track,@PathVariable("trackId") int trackId )
     {
+        //to update all the tracks
         ResponseEntity responseEntity;
-        trackService.updateTrack(track,trackId);
-        responseEntity=new ResponseEntity<String>("Successfully Updated",HttpStatus.OK);
+        try {
+            trackService.updateTrack(track, trackId);
+            responseEntity = new ResponseEntity<String>("Successfully Updated", HttpStatus.OK);
+        }catch (Exception ex) {
+            responseEntity = new ResponseEntity(ex.getMessage(), HttpStatus.CONFLICT);
+        }
         return responseEntity;
     }
 
-    @GetMapping("delete/{trackId}")
+    @ApiOperation(value = "Delete a track", response = Iterable.class)
+    @GetMapping("track1/{trackId}")
     public ResponseEntity<?> deleteTrack(@PathVariable("trackId") int trackId )
     {
-        trackService.deleteTrackById(trackId);
+        //to delete a particular track usind id
         ResponseEntity responseEntity;
-        responseEntity=new  ResponseEntity<List<Track>>(trackService.getAllTracks(), HttpStatus.OK);
+        try {
+            trackService.deleteTrackById(trackId);
+            responseEntity = new ResponseEntity<List<Track>>(trackService.getAllTracks(), HttpStatus.OK);
+        }catch (Exception ex){
+
+            responseEntity= new ResponseEntity(ex.getMessage(),HttpStatus.CONFLICT);
+        }
         return responseEntity;
     }
-
+    @ApiOperation(value = "Get the details of a track by ID", response = Iterable.class)
     @GetMapping("track/{trackId}")
     public ResponseEntity<?> getTrackById(@PathVariable("trackId") int trackId)
     {
+        //To get a particular track using id
         ResponseEntity responseEntity;
-        trackService.getTrackById(trackId);
-        responseEntity=new ResponseEntity<Optional<Track>>(trackService.getTrackById(trackId),HttpStatus.OK);
+        try {
+            trackService.getTrackById(trackId);
+            responseEntity = new ResponseEntity<Optional<Track>>(trackService.getTrackById(trackId), HttpStatus.OK);
+        }catch(Exception ex){
+
+            responseEntity= new ResponseEntity(ex.getMessage(),HttpStatus.CONFLICT);
+        }
         return responseEntity;
     }
+    @ApiOperation(value = "Get the details of a track by trackName", response = Iterable.class)
+    @GetMapping("track/{trackName}")
+    public ResponseEntity<?> findByNamee(@PathVariable("trackName") String trackName ) {
+        //To find a track using name
+        ResponseEntity responseEntity;
+        try {
+            responseEntity = new ResponseEntity<List<Track>>(trackService.findByName(trackName), HttpStatus.OK);
+        }catch(Exception ex){
+
+            responseEntity= new ResponseEntity(ex.getMessage(),HttpStatus.CONFLICT);
+        }
+        return responseEntity;
+    }
+
 
 
 }
